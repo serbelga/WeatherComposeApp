@@ -24,7 +24,7 @@ data class Temperature(
     val unit: TemperatureUnit
 ) {
     override fun toString(): String {
-        return "$value${unit.symbol}"
+        return "${value.toInt()}${unit.symbol}"
     }
 }
 

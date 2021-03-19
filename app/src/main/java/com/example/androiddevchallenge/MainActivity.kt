@@ -18,16 +18,19 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import com.example.androiddevchallenge.ui.WeatherScreen
 import com.example.androiddevchallenge.ui.model.valenciaWeather
-import com.example.androiddevchallenge.ui.theme.MyTheme
+import com.example.androiddevchallenge.ui.screen.WeatherScreen
+import com.example.androiddevchallenge.ui.theme.WeatherTheme
+import com.google.accompanist.insets.ProvideWindowInsets
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyTheme {
-                WeatherScreen(valenciaWeather)
+            WeatherTheme {
+                ProvideWindowInsets {
+                    WeatherScreen(valenciaWeather)
+                }
             }
         }
     }
