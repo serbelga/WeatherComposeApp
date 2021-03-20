@@ -10,4 +10,17 @@
       the License.
       -->
     <string name="app_name">AndroidDevChallenge</string>
+    <string name="hourly_forecast">Hourly Forecast</string>
+    <string name="daily_forecast">Daily Forecast</string>
+    <string name="sunrise_sunset">Sunrise &amp; Sunset</string>
+    <string name="clear">Clear</string>
+    <string name="cloudy">Cloudy</string>
+    <string name="rainy">Rainy</string>
+    <string name="light_rain">Light Rain</string>
+    <string name="moderate_rain">Moderate Rain</string>
+    <string name="heavy_rain">Heavy Rain</string>
+    <string name="snowy">Snowy</string>
+    <string name="stormy">Stormy</string>
+    <string name="windy">Windy</string>
+    <string name="partly_cloudy">Partly cloudy</string>
 </resources>

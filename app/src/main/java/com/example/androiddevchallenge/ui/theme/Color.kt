@@ -22,5 +22,18 @@ val purple500 = Color(0xFF6200EE)
 val purple700 = Color(0xFF3700B3)
 val teal200 = Color(0xFF03DAC5)
 
+val backgroundDark = Color(0xFF191C2C)
+
 val outlineDark = Color(255, 255, 255, alpha = 12)
-val outlineLight = Color(0xFFEEEEEE)
+val outlineLight = Color(0xFFF5F5F5)
+
+val chartStrokeLight = Color(0xFF3D5AFE)
+val chartFillLight = Color(0xFF536DFE)
+val chartLinearGradientLight = listOf(chartFillLight, Color.Transparent)
+
+val selectorLight = Color(0xFFF5F5F5)
+val selectorDark = Color(0xFF2C3147)
+
+val sunChartStroke = Color(0xFFFFB74D)
+val sunChartFillColor = Color(0xFFFFD54F)
+// val sunChartLinearGradient = listOf(chartFillColor, Color.Transparent)

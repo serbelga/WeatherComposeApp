@@ -26,27 +26,32 @@ import androidx.compose.ui.graphics.Color
 private val DarkColorPalette = darkColors(
     primary = purple200,
     primaryVariant = purple700,
-    secondary = teal200
+    secondary = teal200,
+    background = backgroundDark,
+    surface = backgroundDark
 )
 
 private val LightColorPalette = lightColors(
     primary = purple500,
     primaryVariant = purple700,
     secondary = teal200,
-    onBackground = Color(0xFF292929)
-
-        /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
     onSurface = Color.Black,
-    */
+    onBackground = Color(0xFF292929),
+    surface = Color(0xFFFFFFFF),
+    background = Color(0xFFFBFBFB)
 )
 
 val Colors.outline: Color
     @Composable get() = if (isLight) outlineLight else outlineDark
+
+val Colors.selector: Color
+    @Composable get() = if (isLight) selectorLight else selectorDark
+
+val Colors.chartStroke: Color
+    @Composable get() = if (isLight) chartStrokeLight else chartStrokeLight
+
+val Colors.chartFill: Color
+    @Composable get() = if (isLight) chartFillLight else chartFillLight
 
 @Composable
 fun WeatherTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {

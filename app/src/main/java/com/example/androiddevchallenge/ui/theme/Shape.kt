@@ -24,3 +24,5 @@ val shapes = Shapes(
     medium = RoundedCornerShape(16.dp),
     large = RoundedCornerShape(0.dp)
 )
+
+val selectorShape = RoundedCornerShape(8.dp)
