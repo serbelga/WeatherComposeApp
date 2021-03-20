@@ -17,4 +17,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="cloud">#E3E3E3</color>
+    <color name="rain">#2196F3</color>
+    <color name="snow">#2196F3</color>
+    <color name="wind">#2196F3</color>
+    <color name="sun_corona">#F9A825</color>
+    <color name="sun">#FDD835</color>
 </resources>

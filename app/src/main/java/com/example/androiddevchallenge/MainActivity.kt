@@ -18,7 +18,7 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import com.example.androiddevchallenge.ui.model.valenciaWeather
+import com.example.androiddevchallenge.model.valenciaWeather
 import com.example.androiddevchallenge.ui.screen.WeatherScreen
 import com.example.androiddevchallenge.ui.theme.WeatherTheme
 import com.google.accompanist.insets.ProvideWindowInsets

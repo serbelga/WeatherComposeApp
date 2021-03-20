@@ -16,6 +16,7 @@
 package com.example.androiddevchallenge.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
@@ -32,7 +33,7 @@ private val LightColorPalette = lightColors(
     primary = purple500,
     primaryVariant = purple700,
     secondary = teal200,
-    onBackground = Color(0xFF212121)
+    onBackground = Color(0xFF292929)
 
         /* Other default colors to override
     background = Color.White,
@@ -43,6 +44,9 @@ private val LightColorPalette = lightColors(
     onSurface = Color.Black,
     */
 )
+
+val Colors.outline: Color
+    @Composable get() = if (isLight) outlineLight else outlineDark
 
 @Composable
 fun WeatherTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {

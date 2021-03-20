@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -44,9 +45,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.R
-import com.example.androiddevchallenge.ui.model.CityWeather
-import com.example.androiddevchallenge.ui.model.valenciaWeather
+import com.example.androiddevchallenge.model.CityWeather
+import com.example.androiddevchallenge.model.DailyForecast
+import com.example.androiddevchallenge.model.Temperature
+import com.example.androiddevchallenge.model.TemperatureUnit
+import com.example.androiddevchallenge.model.Weather
+import com.example.androiddevchallenge.model.dailyForecastList
+import com.example.androiddevchallenge.ui.components.HorizontalDivider
 import com.example.androiddevchallenge.ui.theme.WeatherTheme
+import com.example.androiddevchallenge.ui.theme.outline
 import com.google.accompanist.insets.statusBarsPadding
 import java.util.*
 
@@ -64,33 +71,35 @@ fun WeatherScreen(cityWeather: CityWeather) {
                     Column(
                         modifier = Modifier.padding(start = 24.dp, top = 8.dp)
                     ) {
+                        // TODO 750 as const
                         if (scrollState.value >= 750) {
                             Text(
                                 text = cityWeather.city.name,
                                 style = MaterialTheme.typography.h6
                             )
-                            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                                Text(
-                                    text = "Wednesday, 13:00h",
-                                    style = MaterialTheme.typography.caption,
-                                )
-                            }
                         } else {
                             Text(
                                 text = cityWeather.city.name,
                                 style = MaterialTheme.typography.h5
                             )
-                            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                                Text(
-                                    text = "Wednesday, 13:00h",
-                                    style = MaterialTheme.typography.body1,
-                                )
-                            }
                         }
                         AnimatedVisibility(visible = scrollState.value >= 750) {
                             Text(
                                 text = cityWeather.temperature.toString()
                             )
+                        }
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                            if (scrollState.value >= 750) {
+                                Text(
+                                    text = "Wednesday, 13:00h",
+                                    style = MaterialTheme.typography.caption,
+                                )
+                            } else {
+                                Text(
+                                    text = "Wednesday, 13:00h",
+                                    style = MaterialTheme.typography.body1,
+                                )
+                            }
                         }
                     }
                 },
@@ -167,6 +176,9 @@ fun WeatherScreen(cityWeather: CityWeather) {
             DailyForecastCard()
             SunriseSunsetCard()
         }
+        if (scrollState.value >= 175) {
+            HorizontalDivider()
+        }
     }
 }
 
@@ -174,7 +186,7 @@ fun WeatherScreen(cityWeather: CityWeather) {
 fun HourlyForecastCard(minValue: Float, maxValue: Float) {
     Card(
         elevation = 0.dp,
-        border = BorderStroke(width = 1.dp, Color(0xFFEEEEEE)),
+        border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.outline),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
@@ -253,13 +265,17 @@ fun HourlyForecastItem(predictionHour: HourlyForecast) {
 fun DailyForecastCard() {
     Card(
         elevation = 0.dp,
-        border = BorderStroke(width = 1.dp, Color(0xFFEEEEEE)),
+        border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.outline),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .height(200.dp)
     ) {
-        CardTitle("Daily forecast")
+        Column {
+            CardTitle("Daily forecast")
+            dailyForecastList.forEach {
+                DailyForecastItem(dailyForecast = it)
+            }
+        }
     }
 }
 
@@ -270,7 +286,7 @@ fun CardTitle(text: String) {
         style = MaterialTheme.typography.caption,
         modifier = Modifier
             .paddingFromBaseline(top = 24.dp)
-            .padding(start = 16.dp)
+            .padding(start = 16.dp, bottom = 16.dp)
     )
 }
 
@@ -278,7 +294,7 @@ fun CardTitle(text: String) {
 fun SunriseSunsetCard() {
     Card(
         elevation = 0.dp,
-        border = BorderStroke(width = 1.dp, Color(0xFFEEEEEE)),
+        border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.outline),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
@@ -302,7 +318,55 @@ val predictionHours = listOf(
     HourlyForecast("21º", "18:00h")
 )
 
-@Preview("Light Theme", widthDp = 360, heightDp = 640)
+@Composable
+fun DailyForecastItem(dailyForecast: DailyForecast) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .height(56.dp)
+            .padding(start = 16.dp, end = 16.dp)
+    ) {
+        Text(
+            dailyForecast.day,
+            modifier = Modifier.weight(1f)
+        )
+        Row(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = dailyForecast.temperatureMax.toString()
+            )
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = dailyForecast.temperatureMin.toString(),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+        Image(
+            painterResource(id = dailyForecast.weather.drawableResId),
+            contentDescription = "",
+            modifier = Modifier.size(32.dp)
+        )
+    }
+}
+
+@Preview(widthDp = 360)
+@Composable
+fun DailyForecastItemPreview() {
+    WeatherTheme {
+        DailyForecastItem(
+            DailyForecast(
+                "Tomorrow",
+                Temperature(27.0, TemperatureUnit.CELSIUS),
+                Temperature(21.0, TemperatureUnit.CELSIUS),
+                Weather.SUNNY
+            )
+        )
+    }
+}
+
+/*@Preview("Light Theme", widthDp = 360, heightDp = 640)
 @Composable
 fun LightPreview() {
     WeatherTheme {
@@ -316,4 +380,4 @@ fun DarkPreview() {
     WeatherTheme(darkTheme = true) {
         WeatherScreen(valenciaWeather)
     }
-}
+}*/
