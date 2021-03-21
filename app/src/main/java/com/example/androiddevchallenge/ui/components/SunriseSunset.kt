@@ -26,7 +26,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect.Companion.dashPathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -37,9 +39,12 @@ import com.example.androiddevchallenge.R
 import com.example.androiddevchallenge.ui.theme.WeatherTheme
 import com.example.androiddevchallenge.ui.theme.sunChartStroke
 import com.example.androiddevchallenge.util.DateUtil.formatMillis
+import java.lang.Math.toDegrees
+import kotlin.math.PI
 
 @Composable
 fun SunriseSunsetCard(
+    timestamp: Long,
     sunriseMillis: Long,
     sunsetMillis: Long
 ) {
@@ -53,6 +58,7 @@ fun SunriseSunsetCard(
                     modifier = Modifier
                         .height(100.dp)
                         .width(240.dp)
+                        .clipToBounds()
                 ) {
                     val canvasHeight = size.height
                     val canvasWidth = size.width
@@ -65,7 +71,7 @@ fun SunriseSunsetCard(
                         mX + radius,
                         mY + radius
                     )
-                    val path = Path().apply {
+                    val progressBar = Path().apply {
                         arcTo(
                             oval,
                             180f,
@@ -74,7 +80,26 @@ fun SunriseSunsetCard(
                         )
                     }
                     drawPath(
-                        path,
+                        progressBar,
+                        color = Color.Gray,
+                        style = Stroke(
+                            width = 16f,
+                            pathEffect = dashPathEffect(
+                                floatArrayOf(10f, 10f), 0f
+                            )
+                        )
+                    )
+                    val radians = ((timestamp - sunriseMillis) * PI) / (sunsetMillis - sunriseMillis)
+                    val progress = Path().apply {
+                        arcTo(
+                            oval,
+                            180f,
+                            toDegrees(radians).toFloat(),
+                            false
+                        )
+                    }
+                    drawPath(
+                        progress,
                         color = sunChartStroke,
                         style = Stroke(
                             width = 16f,
@@ -104,6 +129,7 @@ fun SunriseSunsetCard(
 fun SunriseSunsetCardPreview() {
     WeatherTheme {
         SunriseSunsetCard(
+            timestamp = 46800000,
             sunriseMillis = 25200000,
             sunsetMillis = 68640000
         )

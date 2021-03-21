@@ -26,7 +26,7 @@ val japan = City(
 
 val valenciaWeather = CityWeather(
     city = valencia,
-    timestamp = 46800000,
+    timestamp = 32400000,
     day = "Wednesday",
     temperature = Temperature(20f, TemperatureUnit.CELSIUS),
     humidity = 20,
@@ -38,12 +38,12 @@ val valenciaWeather = CityWeather(
 
 val japanWeather = CityWeather(
     city = japan,
-    timestamp = 46800000,
+    timestamp = 75600000,
     day = "Wednesday",
     temperature = Temperature(20f, TemperatureUnit.CELSIUS),
     humidity = 20,
     windSpeed = 60,
-    weather = Weather.WINDY,
+    weather = Weather.CLEAR,
     sunriseTimestamp = 25200000,
     sunsetTimestamp = 68640000
 )

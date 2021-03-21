@@ -202,7 +202,13 @@ fun WeatherScreen(
                     userPreferencesTemperatureUnit.value
                 )
             }
-            cityWeather.value?.let { SunriseSunsetCard(it.sunriseTimestamp, it.sunsetTimestamp) }
+            cityWeather.value?.let {
+                SunriseSunsetCard(
+                    it.timestamp,
+                    it.sunriseTimestamp,
+                    it.sunsetTimestamp
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
         }
         if (scrollState.value >= 175) {

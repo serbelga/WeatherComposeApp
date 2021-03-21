@@ -44,7 +44,7 @@ class WeatherViewModel @Inject constructor(
     val setTemperatureUnitUseCase: SetTemperatureUnitUseCase
 ) : ViewModel() {
 
-    val cityWeather: LiveData<CityWeather?> = getCityWeatherUseCase(1).asLiveData()
+    val cityWeather: LiveData<CityWeather?> = getCityWeatherUseCase(2).asLiveData()
 
     val cityDailyForecast: LiveData<CityDailyForecast?> = getCityDailyForecastUseCase(1).asLiveData()
 
