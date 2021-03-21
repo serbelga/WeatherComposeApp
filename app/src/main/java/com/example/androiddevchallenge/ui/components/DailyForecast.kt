@@ -33,19 +33,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.R
+import com.example.androiddevchallenge.datasource.citiesDailyForecast
+import com.example.androiddevchallenge.model.CityDailyForecast
 import com.example.androiddevchallenge.model.DailyForecast
 import com.example.androiddevchallenge.model.Temperature
 import com.example.androiddevchallenge.model.TemperatureUnit
 import com.example.androiddevchallenge.model.Weather
-import com.example.androiddevchallenge.model.dailyForecastList
 import com.example.androiddevchallenge.ui.theme.WeatherTheme
 
 @Composable
-fun DailyForecastCard(dailyForecastList: List<DailyForecast>) {
+fun DailyForecastCard(dailyForecast: CityDailyForecast) {
     WeatherCard {
         Column {
             CardTitle(stringResource(id = R.string.daily_forecast))
-            dailyForecastList.forEach {
+            dailyForecast.dailyForecastList.forEach {
                 DailyForecastItem(dailyForecast = it)
             }
         }
@@ -89,7 +90,9 @@ fun DailyForecastItem(dailyForecast: DailyForecast) {
 @Composable
 fun DailyForecastCardPreview() {
     WeatherTheme {
-        DailyForecastCard(dailyForecastList)
+        citiesDailyForecast.firstOrNull()?.let {
+            DailyForecastCard(it)
+        }
     }
 }
 

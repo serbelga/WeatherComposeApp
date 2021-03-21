@@ -15,7 +15,6 @@
  */
 package com.example.androiddevchallenge.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -24,17 +23,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = purple200,
-    primaryVariant = purple700,
-    secondary = teal200,
+    primary = indigoA200,
     background = backgroundDark,
     surface = backgroundDark
 )
 
 private val LightColorPalette = lightColors(
-    primary = purple500,
-    primaryVariant = purple700,
-    secondary = teal200,
+    primary = indigoA400,
+    secondary = Color.White,
     onSurface = Color.Black,
     onBackground = Color(0xFF292929),
     surface = Color(0xFFFFFFFF),
@@ -54,7 +50,7 @@ val Colors.chartFill: Color
     @Composable get() = if (isLight) chartFillLight else chartFillLight
 
 @Composable
-fun WeatherTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun WeatherTheme(darkTheme: Boolean = false, content: @Composable() () -> Unit) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {

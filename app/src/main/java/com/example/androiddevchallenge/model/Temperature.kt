@@ -19,12 +19,23 @@ data class Temperature(
     val value: Float,
     val unit: TemperatureUnit = TemperatureUnit.CELSIUS
 ) {
-    override fun toString(): String {
-        return "${value.toInt()}${unit.symbol}"
-    }
+    override fun toString(): String = "${value.toInt()}${unit.symbol}"
 }
 
-enum class TemperatureUnit(val symbol: String) {
-    CELSIUS("ºC"),
-    FAHRENHEIT("ºF")
+data class WindSpeed(
+    val value: Float,
+    val unit: WindSpeedUnit = WindSpeedUnit.KILOMETERS_PER_HOUR
+) {
+    override fun toString(): String = "${value.toInt()}${unit.symbol}"
+}
+
+// TODO: 21/03/2021 Move to strings res
+enum class TemperatureUnit(val description: String, val symbol: String) {
+    CELSIUS("Celsius", "ºC"),
+    FAHRENHEIT("Fahrenheit", "ºF")
+}
+
+enum class WindSpeedUnit(val description: String, val symbol: String) {
+    KILOMETERS_PER_HOUR("Kilometers per hour", "km/h"),
+    MILES_PER_HOUR("Miles per hour", "mph")
 }

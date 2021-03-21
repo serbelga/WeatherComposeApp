@@ -17,20 +17,16 @@ package com.example.androiddevchallenge.model
 
 data class CityWeather(
     val city: City,
+    val timestamp: Long,
+    val day: String,
     val temperature: Temperature,
     val humidity: Int? = null,
     val windSpeed: Int? = null,
-    val weather: Weather
+    val weather: Weather,
+    val sunriseTimestamp: Long,
+    val sunsetTimestamp: Long
 ) {
     fun getHumidity(): String = "$humidity%"
 
     fun getWindSpeed(): String = "$windSpeed km/h"
 }
-
-val valenciaWeather = CityWeather(
-    city = valencia,
-    temperature = Temperature(20f, TemperatureUnit.CELSIUS),
-    humidity = 20,
-    windSpeed = 60,
-    weather = Weather.WINDY
-)

@@ -15,48 +15,14 @@
  */
 package com.example.androiddevchallenge.model
 
+data class CityDailyForecast(
+    val cityId: Int,
+    val dailyForecastList: List<DailyForecast>
+)
+
 data class DailyForecast(
     val day: String,
     val temperatureMax: Temperature,
     val temperatureMin: Temperature,
     val weather: Weather
-)
-
-val dailyForecastList = listOf(
-    DailyForecast(
-        "Tomorrow",
-        Temperature(27f, TemperatureUnit.CELSIUS),
-        Temperature(24f, TemperatureUnit.CELSIUS),
-            Weather.CLEAR
-    ),
-    DailyForecast(
-        "Friday",
-        Temperature(26f, TemperatureUnit.CELSIUS),
-        Temperature(21f, TemperatureUnit.CELSIUS),
-        Weather.CLEAR
-    ),
-    DailyForecast(
-        "Saturday",
-        Temperature(25f, TemperatureUnit.CELSIUS),
-        Temperature(20f, TemperatureUnit.CELSIUS),
-        Weather.CLEAR
-    ),
-    DailyForecast(
-        "Sunday",
-        Temperature(26f, TemperatureUnit.CELSIUS),
-        Temperature(21f, TemperatureUnit.CELSIUS),
-        Weather.CLEAR
-    ),
-    DailyForecast(
-        "Monday",
-        Temperature(18f, TemperatureUnit.CELSIUS),
-        Temperature(12f, TemperatureUnit.CELSIUS),
-        Weather.MODERATE_RAIN
-    ),
-    DailyForecast(
-        "Tuesday",
-        Temperature(16f, TemperatureUnit.CELSIUS),
-        Temperature(10f, TemperatureUnit.CELSIUS),
-        Weather.HEAVY_RAIN
-    )
 )

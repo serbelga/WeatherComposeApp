@@ -15,26 +15,39 @@
  */
 package com.example.androiddevchallenge.ui.components
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.R
-import com.example.androiddevchallenge.model.CitySunriseSunset
-import com.example.androiddevchallenge.model.valenciaSunriseSunset
 import com.example.androiddevchallenge.ui.theme.WeatherTheme
 import com.example.androiddevchallenge.util.DateUtil.formatMillis
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Composable
-fun SunriseSunsetCard(sunriseSunset: CitySunriseSunset) {
+fun SunriseSunsetCard(
+    sunriseMillis: Long,
+    sunsetMillis: Long
+) {
     WeatherCard {
         CardTitle(stringResource(id = R.string.sunrise_sunset))
         Column {
-            Text(formatMillis(sunriseSunset.sunriseTimestamp))
-            Text(formatMillis(sunriseSunset.sunsetTimestamp))
+            Text(formatMillis(sunriseMillis))
+            Text(formatMillis(sunsetMillis))
+        }
+        Canvas(
+            modifier = Modifier
+                .height(160.dp)
+                .background(Color.LightGray)
+        ) {
+            val canvasHeight = size.height
+            val canvasWidth = size.width
         }
     }
 }
@@ -43,6 +56,9 @@ fun SunriseSunsetCard(sunriseSunset: CitySunriseSunset) {
 @Composable
 fun SunriseSunsetCardPreview() {
     WeatherTheme {
-        SunriseSunsetCard(valenciaSunriseSunset)
+        SunriseSunsetCard(
+            sunriseMillis = 25200000,
+            sunsetMillis = 68640000
+        )
     }
 }

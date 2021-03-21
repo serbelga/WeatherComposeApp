@@ -24,7 +24,6 @@ enum class Weather(
     @DrawableRes val drawableResId: Int,
     @DrawableRes val nightDrawableResId: Int = drawableResId,
 ) {
-    // TODO Move to string resources
     CLEAR(R.string.clear, R.drawable.sunny, R.drawable.moon),
     CLOUDY(R.string.cloudy, R.drawable.cloudy),
     RAINY(R.string.rainy, R.drawable.rainy),

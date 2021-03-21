@@ -50,13 +50,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.R
-import com.example.androiddevchallenge.model.HourlyForecast
+import com.example.androiddevchallenge.datasource.citiesHourlyForecast
+import com.example.androiddevchallenge.model.CityHourlyForecast
 import com.example.androiddevchallenge.model.HourlyForecastChunk
 import com.example.androiddevchallenge.model.Temperature
 import com.example.androiddevchallenge.model.TemperatureUnit
 import com.example.androiddevchallenge.model.Weather
-import com.example.androiddevchallenge.model.hourlyForecastChunks
-import com.example.androiddevchallenge.model.valenciaHourlyForecast
 import com.example.androiddevchallenge.ui.theme.WeatherTheme
 import com.example.androiddevchallenge.ui.theme.chartLinearGradientLight
 import com.example.androiddevchallenge.ui.theme.chartStrokeLight
@@ -64,7 +63,7 @@ import com.example.androiddevchallenge.ui.theme.selector
 import com.example.androiddevchallenge.ui.theme.selectorShape
 
 @Composable
-fun HourlyForecastCard(hourlyForecast: HourlyForecast) {
+fun HourlyForecastCard(hourlyForecast: CityHourlyForecast) {
     var selected by remember { mutableStateOf(0) }
     WeatherCard {
         Column {
@@ -72,7 +71,7 @@ fun HourlyForecastCard(hourlyForecast: HourlyForecast) {
             LazyRow(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp)
             ) {
-                itemsIndexed(hourlyForecastChunks) { index, item ->
+                itemsIndexed(hourlyForecast.chunks) { index, item ->
                     HourlyForecastItem(hourlyForecastChunk = item, selected == index, index) {
                         selected = it
                     }
@@ -82,7 +81,7 @@ fun HourlyForecastCard(hourlyForecast: HourlyForecast) {
                 minValue = hourlyForecast.minValue,
                 maxValue = hourlyForecast.maxValue,
                 selected = selected,
-                hourlyForecastChunks.map { it.temperature.value.toFloat() }
+                hourlyForecast.chunks.map { it.temperature.value }
             )
         }
     }
@@ -183,7 +182,9 @@ fun HourlyForecastItem(
 @Composable
 fun HourlyForecastCardPreview() {
     WeatherTheme {
-        HourlyForecastCard(valenciaHourlyForecast)
+        citiesHourlyForecast.firstOrNull()?.let {
+            HourlyForecastCard(it)
+        }
     }
 }
 

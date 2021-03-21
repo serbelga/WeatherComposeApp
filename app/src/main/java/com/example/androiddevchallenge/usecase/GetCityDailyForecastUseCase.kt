@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.androiddevchallenge.model
+package com.example.androiddevchallenge.usecase
 
-data class City(
-    val id: Int,
-    val name: String,
-    val latitude: Double,
-    val longitude: Double
-)
+import com.example.androiddevchallenge.model.CityDailyForecast
+import com.example.androiddevchallenge.repository.WeatherRepository
+import kotlinx.coroutines.flow.Flow
+
+class GetCityDailyForecastUseCase(
+    private val weatherRepository: WeatherRepository
+) {
+
+    operator fun invoke(cityId: Int): Flow<CityDailyForecast?> =
+        weatherRepository.getCityDailyForecast(cityId)
+}

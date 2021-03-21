@@ -41,25 +41,29 @@ import androidx.compose.material.icons.rounded.Air
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.R
-import com.example.androiddevchallenge.model.CityWeather
-import com.example.androiddevchallenge.model.dailyForecastList
-import com.example.androiddevchallenge.model.valenciaHourlyForecast
-import com.example.androiddevchallenge.model.valenciaSunriseSunset
 import com.example.androiddevchallenge.ui.components.DailyForecastCard
 import com.example.androiddevchallenge.ui.components.HorizontalDivider
 import com.example.androiddevchallenge.ui.components.HourlyForecastCard
 import com.example.androiddevchallenge.ui.components.SunriseSunsetCard
+import com.example.androiddevchallenge.viewmodel.WeatherViewModel
 import com.google.accompanist.insets.statusBarsPadding
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun WeatherScreen(cityWeather: CityWeather) {
+fun WeatherScreen(
+    weatherViewModel: WeatherViewModel,
+    navToSettings: () -> Unit
+) {
+    val cityWeather = weatherViewModel.cityWeather.observeAsState()
+    val cityHourlyForecast = weatherViewModel.cityHourlyForecast.observeAsState()
+    val cityDailyForecast = weatherViewModel.cityDailyForecast.observeAsState()
     val scrollState = rememberScrollState(0)
     Scaffold(
         topBar = {
@@ -74,18 +78,18 @@ fun WeatherScreen(cityWeather: CityWeather) {
                         // TODO 750 as const
                         if (scrollState.value >= 750) {
                             Text(
-                                text = cityWeather.city.name,
+                                text = cityWeather.value?.city?.name ?: "",
                                 style = MaterialTheme.typography.h6
                             )
                         } else {
                             Text(
-                                text = cityWeather.city.name,
+                                text = cityWeather.value?.city?.name ?: "",
                                 style = MaterialTheme.typography.h5
                             )
                         }
                         AnimatedVisibility(visible = scrollState.value >= 750) {
                             Text(
-                                text = cityWeather.temperature.toString()
+                                text = cityWeather.value?.temperature?.toString() ?: ""
                             )
                         }
                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -106,7 +110,7 @@ fun WeatherScreen(cityWeather: CityWeather) {
                 actions = {
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                         IconButton(
-                            onClick = { },
+                            onClick = navToSettings,
                             modifier = Modifier.padding(end = 8.dp)
                         ) {
                             Icon(
@@ -127,58 +131,60 @@ fun WeatherScreen(cityWeather: CityWeather) {
                 .fillMaxWidth()
                 .verticalScroll(scrollState)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(bottom = 64.dp, top = 48.dp)
-            ) {
-                val drawableResId =
-                    if (MaterialTheme.colors.isLight)
-                        cityWeather.weather.drawableResId
-                    else
-                        cityWeather.weather.nightDrawableResId
-                Image(
-                    painterResource(id = drawableResId),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .height(160.dp)
-                        .width(200.dp)
-                )
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(
-                        stringResource(id = cityWeather.weather.stringResId),
-                        style = MaterialTheme.typography.body1,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-                Text(
-                    text = cityWeather.temperature.toString(),
-                    style = MaterialTheme.typography.h3
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+            cityWeather.value?.let { cityWeather ->
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(bottom = 64.dp, top = 48.dp)
                 ) {
+                    val drawableResId =
+                        if (MaterialTheme.colors.isLight)
+                            cityWeather.weather.drawableResId
+                        else
+                            cityWeather.weather.nightDrawableResId
+                    Image(
+                        painterResource(id = drawableResId),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .height(160.dp)
+                            .width(200.dp)
+                    )
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Icon(
-                            Icons.Rounded.Air,
-                            "Wind speed"
+                        Text(
+                            stringResource(id = cityWeather.weather.stringResId),
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier.padding(top = 4.dp)
                         )
                     }
                     Text(
-                        text = cityWeather.getWindSpeed()
+                        text = cityWeather.temperature.toString(),
+                        style = MaterialTheme.typography.h3
                     )
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_water_outline_24),
-                            "Wind"
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                            Icon(
+                                Icons.Rounded.Air,
+                                "Wind speed"
+                            )
+                        }
+                        Text(
+                            text = cityWeather.getWindSpeed()
                         )
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_water_outline_24),
+                                "Humidity"
+                            )
+                        }
+                        Text(text = cityWeather.getHumidity())
                     }
-                    Text(text = cityWeather.getHumidity())
                 }
             }
-            HourlyForecastCard(valenciaHourlyForecast)
-            DailyForecastCard(dailyForecastList)
-            SunriseSunsetCard(valenciaSunriseSunset)
+            cityHourlyForecast.value?.let { HourlyForecastCard(it) }
+            cityDailyForecast.value?.let { DailyForecastCard(it) }
+            cityWeather.value?.let { SunriseSunsetCard(it.sunriseTimestamp, it.sunsetTimestamp) }
         }
         if (scrollState.value >= 175) {
             HorizontalDivider()
