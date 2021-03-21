@@ -21,6 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -41,6 +42,7 @@ import androidx.compose.material.icons.rounded.Air
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +50,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.R
+import com.example.androiddevchallenge.model.Temperature
+import com.example.androiddevchallenge.model.TemperatureUnit
 import com.example.androiddevchallenge.ui.components.DailyForecastCard
 import com.example.androiddevchallenge.ui.components.HorizontalDivider
 import com.example.androiddevchallenge.ui.components.HourlyForecastCard
@@ -64,6 +68,8 @@ fun WeatherScreen(
     val cityWeather = weatherViewModel.cityWeather.observeAsState()
     val cityHourlyForecast = weatherViewModel.cityHourlyForecast.observeAsState()
     val cityDailyForecast = weatherViewModel.cityDailyForecast.observeAsState()
+    val userPreferencesTemperatureUnit =
+        weatherViewModel.temperatureUnit.collectAsState(initial = TemperatureUnit.CELSIUS)
     val scrollState = rememberScrollState(0)
     Scaffold(
         topBar = {
@@ -89,7 +95,9 @@ fun WeatherScreen(
                         }
                         AnimatedVisibility(visible = scrollState.value >= 750) {
                             Text(
-                                text = cityWeather.value?.temperature?.toString() ?: ""
+                                text = cityWeather.value?.temperature?.getStringAs(
+                                    userPreferencesTemperatureUnit.value
+                                ) ?: ""
                             )
                         }
                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -155,9 +163,9 @@ fun WeatherScreen(
                             modifier = Modifier.padding(top = 4.dp)
                         )
                     }
-                    Text(
-                        text = cityWeather.temperature.toString(),
-                        style = MaterialTheme.typography.h3
+                    TemperatureText(
+                        temperature = cityWeather.temperature,
+                        userPreferencesTemperatureUnit = userPreferencesTemperatureUnit.value
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -182,14 +190,33 @@ fun WeatherScreen(
                     }
                 }
             }
-            cityHourlyForecast.value?.let { HourlyForecastCard(it) }
-            cityDailyForecast.value?.let { DailyForecastCard(it) }
+            cityHourlyForecast.value?.let {
+                HourlyForecastCard(
+                    it,
+                    userPreferencesTemperatureUnit.value
+                )
+            }
+            cityDailyForecast.value?.let {
+                DailyForecastCard(
+                    it,
+                    userPreferencesTemperatureUnit.value
+                )
+            }
             cityWeather.value?.let { SunriseSunsetCard(it.sunriseTimestamp, it.sunsetTimestamp) }
+            Spacer(modifier = Modifier.height(24.dp))
         }
         if (scrollState.value >= 175) {
             HorizontalDivider()
         }
     }
+}
+
+@Composable
+fun TemperatureText(temperature: Temperature, userPreferencesTemperatureUnit: TemperatureUnit) {
+    Text(
+        text = temperature.getStringAs(userPreferencesTemperatureUnit),
+        style = MaterialTheme.typography.h3
+    )
 }
 
 // TODO Remove comment

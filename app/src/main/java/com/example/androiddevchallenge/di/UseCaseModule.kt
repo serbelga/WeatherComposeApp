@@ -5,7 +5,9 @@ import com.example.androiddevchallenge.repository.WeatherRepository
 import com.example.androiddevchallenge.usecase.GetCityDailyForecastUseCase
 import com.example.androiddevchallenge.usecase.GetCityHourlyForecastUseCase
 import com.example.androiddevchallenge.usecase.GetCityWeatherUseCase
+import com.example.androiddevchallenge.usecase.GetTemperatureUnitUseCase
 import com.example.androiddevchallenge.usecase.IsDarkThemeEnabledUseCase
+import com.example.androiddevchallenge.usecase.SetTemperatureUnitUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,4 +42,16 @@ object UseCaseModule {
     fun provideIsDarkThemeEnabledUseCase(
         userPreferencesRepository: UserPreferencesRepository
     ) = IsDarkThemeEnabledUseCase(userPreferencesRepository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetTemperatureUnitUseCase(
+        userPreferencesRepository: UserPreferencesRepository
+    ) = GetTemperatureUnitUseCase(userPreferencesRepository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideSetTemperatureUnitUseCase(
+        userPreferencesRepository: UserPreferencesRepository
+    ) = SetTemperatureUnitUseCase(userPreferencesRepository)
 }

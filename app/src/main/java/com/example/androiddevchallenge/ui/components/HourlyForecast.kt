@@ -63,7 +63,10 @@ import com.example.androiddevchallenge.ui.theme.selector
 import com.example.androiddevchallenge.ui.theme.selectorShape
 
 @Composable
-fun HourlyForecastCard(hourlyForecast: CityHourlyForecast) {
+fun HourlyForecastCard(
+    hourlyForecast: CityHourlyForecast,
+    userPreferencesTemperatureUnit: TemperatureUnit
+) {
     var selected by remember { mutableStateOf(0) }
     WeatherCard {
         Column {
@@ -72,16 +75,21 @@ fun HourlyForecastCard(hourlyForecast: CityHourlyForecast) {
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp)
             ) {
                 itemsIndexed(hourlyForecast.chunks) { index, item ->
-                    HourlyForecastItem(hourlyForecastChunk = item, selected == index, index) {
+                    HourlyForecastItem(
+                        hourlyForecastChunk = item,
+                        selected == index,
+                        index,
+                        userPreferencesTemperatureUnit
+                    ) {
                         selected = it
                     }
                 }
             }
             HourlyForecastChart(
-                minValue = hourlyForecast.minValue,
-                maxValue = hourlyForecast.maxValue,
+                minValue = hourlyForecast.minValue.getFloatAs(userPreferencesTemperatureUnit),
+                maxValue = hourlyForecast.maxValue.getFloatAs(userPreferencesTemperatureUnit),
                 selected = selected,
-                hourlyForecast.chunks.map { it.temperature.value }
+                hourlyForecast.chunks.map { it.temperature.getFloatAs(userPreferencesTemperatureUnit) }
             )
         }
     }
@@ -145,6 +153,7 @@ fun HourlyForecastItem(
     hourlyForecastChunk: HourlyForecastChunk,
     selected: Boolean,
     index: Int,
+    userPreferencesTemperatureUnit: TemperatureUnit,
     onClick: (Int) -> Unit
 ) {
     Column(
@@ -165,7 +174,7 @@ fun HourlyForecastItem(
             modifier = Modifier.size(32.dp)
         )
         Text(
-            hourlyForecastChunk.temperature.toString(),
+            hourlyForecastChunk.temperature.getStringAs(userPreferencesTemperatureUnit),
             color = MaterialTheme.colors.onSurface
         )
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -183,7 +192,7 @@ fun HourlyForecastItem(
 fun HourlyForecastCardPreview() {
     WeatherTheme {
         citiesHourlyForecast.firstOrNull()?.let {
-            HourlyForecastCard(it)
+            HourlyForecastCard(it, TemperatureUnit.CELSIUS)
         }
     }
 }
@@ -198,7 +207,7 @@ fun HourlyForecastItemPreview() {
                 "14:00h",
                 Weather.HEAVY_RAIN
             ),
-            false, 0
+            false, 0, TemperatureUnit.CELSIUS
         ) {}
     }
 }

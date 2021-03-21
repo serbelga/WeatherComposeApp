@@ -26,7 +26,7 @@ val japan = City(
 
 val valenciaWeather = CityWeather(
     city = valencia,
-    timestamp = 0,
+    timestamp = 46800000,
     day = "Wednesday",
     temperature = Temperature(20f, TemperatureUnit.CELSIUS),
     humidity = 20,
@@ -115,8 +115,8 @@ private val valenciaHourlyForecastChunks = listOf(
 
 private val valenciaHourlyForecast = CityHourlyForecast(
     1,
-    19f,
-    25f,
+    Temperature(19f, TemperatureUnit.CELSIUS),
+    Temperature(25f, TemperatureUnit.CELSIUS),
     valenciaHourlyForecastChunks
 )
 

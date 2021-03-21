@@ -22,7 +22,7 @@ object DateUtil {
     fun formatMillis(millis: Long?): String =
         millis?.let {
             val date = Date(millis)
-            val dateFormatter = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {
+            val dateFormatter = SimpleDateFormat("HH:mm'h'", Locale.getDefault()).apply {
                 timeZone = TimeZone.getTimeZone("UTC")
             }
             dateFormatter.format(date)

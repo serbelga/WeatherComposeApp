@@ -17,8 +17,8 @@ package com.example.androiddevchallenge.model
 
 data class CityHourlyForecast(
     val cityId: Int,
-    val minValue: Float,
-    val maxValue: Float,
+    val minValue: Temperature,
+    val maxValue: Temperature,
     val chunks: List<HourlyForecastChunk>
 )
 

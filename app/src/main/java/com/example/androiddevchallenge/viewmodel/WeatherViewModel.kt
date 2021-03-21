@@ -15,19 +15,23 @@
  */
 package com.example.androiddevchallenge.viewmodel
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.androiddevchallenge.model.CityDailyForecast
 import com.example.androiddevchallenge.model.CityHourlyForecast
 import com.example.androiddevchallenge.model.CityWeather
+import com.example.androiddevchallenge.model.TemperatureUnit
 import com.example.androiddevchallenge.usecase.GetCityDailyForecastUseCase
 import com.example.androiddevchallenge.usecase.GetCityHourlyForecastUseCase
 import com.example.androiddevchallenge.usecase.GetCityWeatherUseCase
+import com.example.androiddevchallenge.usecase.GetTemperatureUnitUseCase
 import com.example.androiddevchallenge.usecase.IsDarkThemeEnabledUseCase
+import com.example.androiddevchallenge.usecase.SetTemperatureUnitUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,7 +39,9 @@ class WeatherViewModel @Inject constructor(
     getCityWeatherUseCase: GetCityWeatherUseCase,
     getCityHourlyForecastUseCase: GetCityHourlyForecastUseCase,
     getCityDailyForecastUseCase: GetCityDailyForecastUseCase,
-    isDarkThemeEnabledUseCase: IsDarkThemeEnabledUseCase
+    isDarkThemeEnabledUseCase: IsDarkThemeEnabledUseCase,
+    getTemperatureUnitUseCase: GetTemperatureUnitUseCase,
+    val setTemperatureUnitUseCase: SetTemperatureUnitUseCase
 ) : ViewModel() {
 
     val cityWeather: LiveData<CityWeather?> = getCityWeatherUseCase(1).asLiveData()
@@ -46,4 +52,10 @@ class WeatherViewModel @Inject constructor(
         getCityHourlyForecastUseCase.invoke(1).asLiveData()
 
     val isDarkTheme: Flow<Boolean> = isDarkThemeEnabledUseCase()
+
+    val temperatureUnit = getTemperatureUnitUseCase()
+
+    fun setTemperatureUnit(temperatureUnit: TemperatureUnit) = viewModelScope.launch {
+        setTemperatureUnitUseCase(temperatureUnit)
+    }
 }

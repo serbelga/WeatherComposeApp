@@ -19,7 +19,36 @@ data class Temperature(
     val value: Float,
     val unit: TemperatureUnit = TemperatureUnit.CELSIUS
 ) {
-    override fun toString(): String = "${value.toInt()}${unit.symbol}"
+
+    fun getStringAs(unit: TemperatureUnit): String {
+        return when (this.unit) {
+            TemperatureUnit.CELSIUS -> stringFormat(celsiusTo(unit), unit)
+            TemperatureUnit.FAHRENHEIT -> stringFormat(fahrenheitTo(unit), unit)
+        }
+    }
+
+    fun getFloatAs(unit: TemperatureUnit): Float {
+        return when (this.unit) {
+            TemperatureUnit.CELSIUS -> celsiusTo(unit)
+            TemperatureUnit.FAHRENHEIT -> fahrenheitTo(unit)
+        }
+    }
+
+    private fun celsiusTo(unit: TemperatureUnit): Float =
+        when (unit) {
+            TemperatureUnit.FAHRENHEIT -> (value * 1.8f) + 32
+            else -> value
+        }
+
+    private fun fahrenheitTo(unit: TemperatureUnit): Float =
+        when (unit) {
+            TemperatureUnit.FAHRENHEIT -> (value - 32) / 1.8f
+            else -> value
+        }
+
+    override fun toString(): String = stringFormat(value, unit)
+
+    private fun stringFormat(value: Float, unit: TemperatureUnit) = "${value.toInt()}${unit.symbol}"
 }
 
 data class WindSpeed(

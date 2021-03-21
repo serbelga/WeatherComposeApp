@@ -49,7 +49,10 @@ fun WeatherApp(weatherViewModel: WeatherViewModel) {
                     )
                 }
                 composable(Settings) {
-                    SettingsScreen(actions.navigateUp)
+                    SettingsScreen(
+                        weatherViewModel,
+                        actions.navigateUp
+                    )
                 }
             }
         }

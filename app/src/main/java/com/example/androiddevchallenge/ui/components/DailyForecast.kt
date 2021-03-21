@@ -42,19 +42,25 @@ import com.example.androiddevchallenge.model.Weather
 import com.example.androiddevchallenge.ui.theme.WeatherTheme
 
 @Composable
-fun DailyForecastCard(dailyForecast: CityDailyForecast) {
+fun DailyForecastCard(
+    dailyForecast: CityDailyForecast,
+    userPreferencesTemperatureUnit: TemperatureUnit
+) {
     WeatherCard {
         Column {
             CardTitle(stringResource(id = R.string.daily_forecast))
             dailyForecast.dailyForecastList.forEach {
-                DailyForecastItem(dailyForecast = it)
+                DailyForecastItem(dailyForecast = it, userPreferencesTemperatureUnit)
             }
         }
     }
 }
 
 @Composable
-fun DailyForecastItem(dailyForecast: DailyForecast) {
+fun DailyForecastItem(
+    dailyForecast: DailyForecast,
+    userPreferencesTemperatureUnit: TemperatureUnit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -69,11 +75,11 @@ fun DailyForecastItem(dailyForecast: DailyForecast) {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = dailyForecast.temperatureMax.toString()
+                text = dailyForecast.temperatureMax.getStringAs(userPreferencesTemperatureUnit)
             )
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = dailyForecast.temperatureMin.toString(),
+                    text = dailyForecast.temperatureMin.getStringAs(userPreferencesTemperatureUnit),
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -91,7 +97,7 @@ fun DailyForecastItem(dailyForecast: DailyForecast) {
 fun DailyForecastCardPreview() {
     WeatherTheme {
         citiesDailyForecast.firstOrNull()?.let {
-            DailyForecastCard(it)
+            DailyForecastCard(it, TemperatureUnit.FAHRENHEIT)
         }
     }
 }
@@ -106,7 +112,8 @@ fun DailyForecastItemPreview() {
                 Temperature(27f, TemperatureUnit.CELSIUS),
                 Temperature(21f, TemperatureUnit.CELSIUS),
                 Weather.CLEAR
-            )
+            ),
+            TemperatureUnit.FAHRENHEIT
         )
     }
 }

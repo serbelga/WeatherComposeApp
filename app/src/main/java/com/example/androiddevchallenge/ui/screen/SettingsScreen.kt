@@ -19,22 +19,40 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardBackspace
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.R
 import com.example.androiddevchallenge.model.TemperatureUnit
+import com.example.androiddevchallenge.model.WindSpeedUnit
+import com.example.androiddevchallenge.ui.components.HorizontalDivider
 import com.example.androiddevchallenge.ui.theme.WeatherTheme
+import com.example.androiddevchallenge.viewmodel.WeatherViewModel
 import com.google.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.flow.firstOrNull
 
 @Composable
-fun SettingsScreen(navigateUp: () -> Unit) {
+fun SettingsScreen(
+    weatherViewModel: WeatherViewModel,
+    navigateUp: () -> Unit
+) {
+    val temperatureUnit = weatherViewModel.temperatureUnit.collectAsState(initial = null)
     val temperatureUnits = enumValues<TemperatureUnit>()
-    val (selectedTemperatureUnit, onTemperatureUnitSelected) = remember { mutableStateOf(temperatureUnits.getOrNull(0)) }
+
+    val windSpeedUnits = enumValues<WindSpeedUnit>()
+    val (selectedWindSpeedUnit, onWindSpeedUnitSelected) = remember {
+        mutableStateOf(
+            windSpeedUnits.getOrNull(
+                0
+            )
+        )
+    }
     Scaffold(
         topBar = {
             SettingsTopAppBar(navigationIconClick = navigateUp)
@@ -57,15 +75,18 @@ fun SettingsScreen(navigateUp: () -> Unit) {
                             .fillMaxWidth()
                             .height(56.dp)
                             .selectable(
-                                selected = (it == selectedTemperatureUnit),
-                                onClick = { onTemperatureUnitSelected(it) }
+                                selected = (it == temperatureUnit.value),
+                                onClick = {
+                                    weatherViewModel.setTemperatureUnit(it)
+                                },
+                                role = Role.RadioButton
                             )
                             .padding(horizontal = 16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
-                            selected = (it == selectedTemperatureUnit),
-                            onClick = { onTemperatureUnitSelected(it) }
+                            selected = (it == temperatureUnit.value),
+                            onClick = null
                         )
                         Text(
                             text = "${it.description} (${it.symbol})",
@@ -75,6 +96,7 @@ fun SettingsScreen(navigateUp: () -> Unit) {
                     }
                 }
             }
+            HorizontalDivider()
             Text(
                 "WIND SPEED",
                 style = MaterialTheme.typography.caption,
@@ -83,21 +105,21 @@ fun SettingsScreen(navigateUp: () -> Unit) {
                     .padding(start = 16.dp, bottom = 16.dp)
             )
             LazyColumn {
-                items(temperatureUnits) {
+                items(windSpeedUnits) {
                     Row(
                         Modifier
                             .fillMaxWidth()
                             .height(56.dp)
                             .selectable(
-                                selected = (it == selectedTemperatureUnit),
-                                onClick = { onTemperatureUnitSelected(it) }
+                                selected = (it == selectedWindSpeedUnit),
+                                onClick = { onWindSpeedUnitSelected(it) }
                             )
                             .padding(horizontal = 16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
-                            selected = (it == selectedTemperatureUnit),
-                            onClick = { onTemperatureUnitSelected(it) }
+                            selected = (it == selectedWindSpeedUnit),
+                            onClick = { onWindSpeedUnitSelected(it) }
                         )
                         Text(
                             text = "${it.description} (${it.symbol})",
@@ -142,16 +164,6 @@ fun SettingsTopAppBarPreview() {
 fun SettingsTopAppBarDarkPreview() {
     WeatherTheme(true) {
         SettingsTopAppBar {
-
-        }
-    }
-}
-
-@Composable
-@Preview(widthDp = 360)
-fun SettingsScreenPreview() {
-    WeatherTheme {
-        SettingsScreen {
 
         }
     }

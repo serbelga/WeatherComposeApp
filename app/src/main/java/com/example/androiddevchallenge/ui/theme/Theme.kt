@@ -24,13 +24,14 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
     primary = indigoA200,
+    secondary = indigo200,
     background = backgroundDark,
     surface = backgroundDark
 )
 
 private val LightColorPalette = lightColors(
     primary = indigoA400,
-    secondary = Color.White,
+    secondary = indigoA700,
     onSurface = Color.Black,
     onBackground = Color(0xFF292929),
     surface = Color(0xFFFFFFFF),
