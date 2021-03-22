@@ -105,7 +105,7 @@ fun HourlyForecastChart(
     selected: Int,
     chunks: List<Float>
 ) {
-    val chunkHeightDivision = if (maxValue > minValue) maxValue - minValue else 1f
+
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
@@ -113,17 +113,35 @@ fun HourlyForecastChart(
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height
+
+        // Height division -> given by maxValue - minValue.
+        val chunkHeightDivision = if (maxValue > minValue) maxValue - minValue else 1f
+        // Width of each chunk in chart.
         val chunkWidth = canvasWidth / (chunks.size + 1)
+
+        // Stroke path.
         val path = Path()
+        // Represent the area below the stroke path.
         val area = Path()
-        path.moveTo(0f, canvasHeight)
-        area.moveTo(0f, canvasHeight)
-        chunks.forEachIndexed { index, value ->
-            val x = chunkWidth * index
-            val y = (canvasHeight * (maxValue - value)) / chunkHeightDivision
+
+        // x starts in the first chunk.
+        var x = chunkWidth
+        // Area path start in (chunkWidth, canvasHeight).
+        area.moveTo(x, canvasHeight)
+
+        val firstValue = chunks.firstOrNull() ?: 0f
+        var y = (canvasHeight * (maxValue - firstValue)) / chunkHeightDivision
+        // Stroke path starts in the first value in chart.
+        path.moveTo(x, y)
+        // Line to first point of chart.
+        area.lineTo(x, y)
+        chunks.forEach { value ->
+            y = (canvasHeight * (maxValue - value)) / chunkHeightDivision
             path.lineTo(x, y)
             area.lineTo(x, y)
+            x += chunkWidth
         }
+        // Draw stroke path.
         drawPath(
             path = path,
             style = Stroke(
@@ -131,7 +149,9 @@ fun HourlyForecastChart(
             ),
             color = chartStrokeLight
         )
-        area.lineTo(chunkWidth * chunks.size, canvasWidth)
+        // Close area path.
+        area.lineTo(chunkWidth * chunks.size, canvasHeight)
+        // Draw area path.
         drawPath(
             path = area,
             brush = Brush.linearGradient(
@@ -140,13 +160,15 @@ fun HourlyForecastChart(
                 end = Offset(canvasWidth / 2, canvasHeight)
             )
         )
-        val x = chunkWidth * selected
-        val y =
-            (canvasHeight * (maxValue - chunks.getOrElse(selected) { 0f })) / chunkHeightDivision
+        // Draw selected Chunk dot.
+        val selectedX = chunkWidth * (selected + 1)
+        val selectedValue = chunks.getOrNull(selected) ?: 0f
+        val selectedY =
+            (canvasHeight * (maxValue - selectedValue)) / chunkHeightDivision
         drawCircle(
             color = chartStrokeLight,
             radius = 16f,
-            center = Offset(x, y)
+            center = Offset(selectedX, selectedY)
         )
     }
 }

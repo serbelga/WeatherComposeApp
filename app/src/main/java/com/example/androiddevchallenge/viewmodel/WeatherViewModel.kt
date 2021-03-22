@@ -49,7 +49,7 @@ class WeatherViewModel @Inject constructor(
     private val setTemperatureUnitUseCase: SetTemperatureUnitUseCase,
     getWindSpeedUnitUseCase: GetWindSpeedUnitUseCase,
     private val setWindSpeedUnitUseCase: SetWindSpeedUnitUseCase,
-    private val getCitiesUseCase: GetCitiesUseCase,
+    getCitiesUseCase: GetCitiesUseCase,
     private val setCitySelectedUseCase: SetCitySelectedUseCase
 ) : ViewModel() {
 

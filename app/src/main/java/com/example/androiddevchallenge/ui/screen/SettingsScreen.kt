@@ -36,9 +36,11 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.KeyboardBackspace
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -64,6 +66,7 @@ fun SettingsScreen(
     val userPreferenceWindSpeedUnit = weatherViewModel.userPreferenceWindSpeedUnit.collectAsState(
         initial = null
     )
+    val cityWeather = weatherViewModel.cityWeather.observeAsState()
     val cities = weatherViewModel.cities
     Scaffold(
         topBar = {
@@ -72,7 +75,7 @@ fun SettingsScreen(
         modifier = Modifier.statusBarsPadding()
     ) {
         Column {
-            CitySelectedSettings(cities) {
+            CitySelectedSettings(cities, cityWeather.value?.city?.id) {
                 weatherViewModel.setCitySelected(it)
             }
             HorizontalDivider()
@@ -90,13 +93,14 @@ fun SettingsScreen(
 @Composable
 fun CitySelectedSettings(
     cities: List<City>,
+    selected: Int?,
     onCitySelected: (City) -> Unit
 ) {
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
         SettingsPreferenceTitle(stringResource(R.string.city))
         LazyColumn {
             items(cities) {
-                CityItem(city = it) { city ->
+                CityItem(city = it, selected) { city ->
                     onCitySelected(city)
                 }
             }
@@ -104,7 +108,8 @@ fun CitySelectedSettings(
         TextButton(
             onClick = {},
             modifier = Modifier
-                .padding(start = 16.dp)
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
         ) {
             Icon(Icons.Rounded.Add, "Add city")
             Text("Add city", modifier = Modifier.padding(start = 8.dp))
@@ -115,6 +120,7 @@ fun CitySelectedSettings(
 @Composable
 fun CityItem(
     city: City,
+    selected: Int?,
     onCitySelected: (City) -> Unit
 ) {
     Row(
@@ -127,7 +133,15 @@ fun CityItem(
             }
     ) {
         Icon(Icons.Outlined.Place, "City", modifier = Modifier.padding(start = 16.dp))
-        Text(city.name, Modifier.padding(start = 16.dp))
+        Text(
+            city.name,
+            Modifier
+                .padding(start = 16.dp)
+                .weight(1f)
+        )
+        if (city.id == selected) {
+            Icon(Icons.Rounded.Check, "Selected", modifier = Modifier.padding(end = 16.dp))
+        }
     }
 }
 
