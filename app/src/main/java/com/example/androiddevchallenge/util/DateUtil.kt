@@ -16,7 +16,9 @@
 package com.example.androiddevchallenge.util
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 object DateUtil {
     fun formatMillis(millis: Long?): String =

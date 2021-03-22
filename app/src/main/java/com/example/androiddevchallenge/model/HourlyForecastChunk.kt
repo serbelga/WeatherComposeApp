@@ -24,6 +24,6 @@ data class CityHourlyForecast(
 
 data class HourlyForecastChunk(
     val temperature: Temperature,
-    val time: String,
+    val timestamp: Long,
     val weather: Weather
 )

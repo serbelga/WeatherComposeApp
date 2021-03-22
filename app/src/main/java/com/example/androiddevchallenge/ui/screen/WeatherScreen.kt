@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.R
 import com.example.androiddevchallenge.model.Temperature
 import com.example.androiddevchallenge.model.TemperatureUnit
+import com.example.androiddevchallenge.model.WindSpeedUnit
 import com.example.androiddevchallenge.ui.components.DailyForecastCard
 import com.example.androiddevchallenge.ui.components.HorizontalDivider
 import com.example.androiddevchallenge.ui.components.HourlyForecastCard
@@ -68,8 +69,11 @@ fun WeatherScreen(
     val cityWeather = weatherViewModel.cityWeather.observeAsState()
     val cityHourlyForecast = weatherViewModel.cityHourlyForecast.observeAsState()
     val cityDailyForecast = weatherViewModel.cityDailyForecast.observeAsState()
+    val isNight = weatherViewModel.isNight.observeAsState(false)
     val userPreferencesTemperatureUnit =
-        weatherViewModel.temperatureUnit.collectAsState(initial = TemperatureUnit.CELSIUS)
+        weatherViewModel.userPreferenceTemperatureUnit.collectAsState(initial = TemperatureUnit.CELSIUS)
+    val userPreferenceWindSpeedUnit =
+        weatherViewModel.userPreferenceWindSpeedUnit.collectAsState(initial = WindSpeedUnit.KILOMETERS_PER_HOUR)
     val scrollState = rememberScrollState(0)
     Scaffold(
         topBar = {
@@ -81,8 +85,7 @@ fun WeatherScreen(
                     Column(
                         modifier = Modifier.padding(start = 24.dp, top = 8.dp)
                     ) {
-                        // TODO 750 as const
-                        if (scrollState.value >= 750) {
+                        if (scrollState.value >= COLLAPSED_SCROLL_VALUE) {
                             Text(
                                 text = cityWeather.value?.city?.name ?: "",
                                 style = MaterialTheme.typography.h6
@@ -93,7 +96,7 @@ fun WeatherScreen(
                                 style = MaterialTheme.typography.h5
                             )
                         }
-                        AnimatedVisibility(visible = scrollState.value >= 750) {
+                        AnimatedVisibility(visible = scrollState.value >= COLLAPSED_SCROLL_VALUE) {
                             Text(
                                 text = cityWeather.value?.temperature?.getStringAs(
                                     userPreferencesTemperatureUnit.value
@@ -101,14 +104,14 @@ fun WeatherScreen(
                             )
                         }
                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                            if (scrollState.value >= 750) {
+                            if (scrollState.value >= COLLAPSED_SCROLL_VALUE) {
                                 Text(
-                                    text = "Wednesday, 13:00h",
+                                    text = cityWeather.value?.formatDayAndTimestamp() ?: "",
                                     style = MaterialTheme.typography.caption,
                                 )
                             } else {
                                 Text(
-                                    text = "Wednesday, 13:00h",
+                                    text = cityWeather.value?.formatDayAndTimestamp() ?: "",
                                     style = MaterialTheme.typography.body1,
                                 )
                             }
@@ -131,6 +134,7 @@ fun WeatherScreen(
                 modifier = Modifier.height(96.dp)
             )
         },
+        backgroundColor = MaterialTheme.colors.background,
         modifier = Modifier.statusBarsPadding()
     ) {
         Column(
@@ -145,10 +149,10 @@ fun WeatherScreen(
                     modifier = Modifier.padding(bottom = 64.dp, top = 48.dp)
                 ) {
                     val drawableResId =
-                        if (MaterialTheme.colors.isLight)
-                            cityWeather.weather.drawableResId
-                        else
+                        if (isNight.value)
                             cityWeather.weather.nightDrawableResId
+                        else
+                            cityWeather.weather.drawableResId
                     Image(
                         painterResource(id = drawableResId),
                         contentDescription = "",
@@ -178,7 +182,8 @@ fun WeatherScreen(
                             )
                         }
                         Text(
-                            text = cityWeather.getWindSpeed()
+                            text = cityWeather.windSpeed.getStringAs(userPreferenceWindSpeedUnit.value),
+                            Modifier.padding(start = 4.dp, end = 16.dp)
                         )
                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                             Icon(
@@ -193,6 +198,7 @@ fun WeatherScreen(
             cityHourlyForecast.value?.let {
                 HourlyForecastCard(
                     it,
+                    isNight.value,
                     userPreferencesTemperatureUnit.value
                 )
             }
@@ -216,6 +222,8 @@ fun WeatherScreen(
         }
     }
 }
+
+const val COLLAPSED_SCROLL_VALUE = 750
 
 @Composable
 fun TemperatureText(temperature: Temperature, userPreferencesTemperatureUnit: TemperatureUnit) {

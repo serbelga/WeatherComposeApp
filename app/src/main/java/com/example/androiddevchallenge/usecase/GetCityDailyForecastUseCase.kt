@@ -16,13 +16,20 @@
 package com.example.androiddevchallenge.usecase
 
 import com.example.androiddevchallenge.model.CityDailyForecast
+import com.example.androiddevchallenge.preferences.UserPreferencesRepository
 import com.example.androiddevchallenge.repository.WeatherRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 
 class GetCityDailyForecastUseCase(
+    private val userPreferencesRepository: UserPreferencesRepository,
     private val weatherRepository: WeatherRepository
 ) {
 
-    operator fun invoke(cityId: Int): Flow<CityDailyForecast?> =
-        weatherRepository.getCityDailyForecast(cityId)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    operator fun invoke(): Flow<CityDailyForecast?> =
+        userPreferencesRepository.getCitySelected().flatMapLatest {
+            weatherRepository.getCityDailyForecast(it)
+        }
 }

@@ -1,11 +1,10 @@
 package com.example.androiddevchallenge.usecase
 
 import com.example.androiddevchallenge.preferences.UserPreferencesRepository
-import kotlinx.coroutines.flow.Flow
 
-class IsDarkThemeEnabledUseCase(
+class SetCitySelectedUseCase(
     private val userPreferencesRepository: UserPreferencesRepository
 ) {
 
-    operator fun invoke(): Flow<Boolean> = userPreferencesRepository.isDarkThemeEnabled()
+    suspend operator fun invoke(cityId: Int) = userPreferencesRepository.setCitySelected(cityId)
 }

@@ -16,11 +16,6 @@
 package com.example.androiddevchallenge.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import com.example.androiddevchallenge.ui.screen.WeatherScreen
-import com.example.androiddevchallenge.ui.theme.WeatherTheme
-import com.example.androiddevchallenge.viewmodel.WeatherViewModel
-import com.google.accompanist.insets.ProvideWindowInsets
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
@@ -29,17 +24,17 @@ import androidx.navigation.compose.rememberNavController
 import com.example.androiddevchallenge.ui.Destinations.Home
 import com.example.androiddevchallenge.ui.Destinations.Settings
 import com.example.androiddevchallenge.ui.screen.SettingsScreen
+import com.example.androiddevchallenge.ui.screen.WeatherScreen
+import com.example.androiddevchallenge.ui.theme.WeatherTheme
+import com.example.androiddevchallenge.viewmodel.WeatherViewModel
+import com.google.accompanist.insets.ProvideWindowInsets
 
 @Composable
 fun WeatherApp(weatherViewModel: WeatherViewModel) {
-    val cityWeatherState = weatherViewModel.cityWeather.observeAsState()
-    // val darkThemeEnabled = weatherViewModel.isDarkTheme.collectAsState(initial = false)
-    val dark = cityWeatherState.value?.let {
-        it.timestamp < it.sunriseTimestamp || it.timestamp > it.sunsetTimestamp
-    } ?: false
+    val isNight = weatherViewModel.isNight.observeAsState(initial = false)
     val navController = rememberNavController()
     val actions = remember(navController) { Actions(navController) }
-    WeatherTheme(dark) {
+    WeatherTheme(isNight.value) {
         ProvideWindowInsets {
             NavHost(navController = navController, startDestination = Home) {
                 composable(Home) {

@@ -89,25 +89,27 @@ fun SunriseSunsetCard(
                             )
                         )
                     )
-                    val radians = ((timestamp - sunriseMillis) * PI) / (sunsetMillis - sunriseMillis)
-                    val progress = Path().apply {
-                        arcTo(
-                            oval,
-                            180f,
-                            toDegrees(radians).toFloat(),
-                            false
-                        )
-                    }
-                    drawPath(
-                        progress,
-                        color = sunChartStroke,
-                        style = Stroke(
-                            width = 16f,
-                            pathEffect = dashPathEffect(
-                                floatArrayOf(10f, 10f), 0f
+                    if (timestamp in sunriseMillis..sunsetMillis) {
+                        val radians = ((timestamp - sunriseMillis) * PI) / (sunsetMillis - sunriseMillis)
+                        val progress = Path().apply {
+                            arcTo(
+                                oval,
+                                180f,
+                                toDegrees(radians).toFloat(),
+                                false
+                            )
+                        }
+                        drawPath(
+                            progress,
+                            color = sunChartStroke,
+                            style = Stroke(
+                                width = 16f,
+                                pathEffect = dashPathEffect(
+                                    floatArrayOf(10f, 10f), 0f
+                                )
                             )
                         )
-                    )
+                    }
                 }
                 HorizontalDivider()
                 Row(

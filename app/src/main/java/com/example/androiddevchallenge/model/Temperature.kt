@@ -20,19 +20,17 @@ data class Temperature(
     val unit: TemperatureUnit = TemperatureUnit.CELSIUS
 ) {
 
-    fun getStringAs(unit: TemperatureUnit): String {
-        return when (this.unit) {
+    fun getStringAs(unit: TemperatureUnit): String =
+        when (this.unit) {
             TemperatureUnit.CELSIUS -> stringFormat(celsiusTo(unit), unit)
             TemperatureUnit.FAHRENHEIT -> stringFormat(fahrenheitTo(unit), unit)
         }
-    }
 
-    fun getFloatAs(unit: TemperatureUnit): Float {
-        return when (this.unit) {
+    fun getFloatAs(unit: TemperatureUnit): Float =
+        when (this.unit) {
             TemperatureUnit.CELSIUS -> celsiusTo(unit)
             TemperatureUnit.FAHRENHEIT -> fahrenheitTo(unit)
         }
-    }
 
     private fun celsiusTo(unit: TemperatureUnit): Float =
         when (unit) {
@@ -51,20 +49,8 @@ data class Temperature(
     private fun stringFormat(value: Float, unit: TemperatureUnit) = "${value.toInt()}${unit.symbol}"
 }
 
-data class WindSpeed(
-    val value: Float,
-    val unit: WindSpeedUnit = WindSpeedUnit.KILOMETERS_PER_HOUR
-) {
-    override fun toString(): String = "${value.toInt()}${unit.symbol}"
-}
-
 // TODO: 21/03/2021 Move to strings res
 enum class TemperatureUnit(val description: String, val symbol: String) {
     CELSIUS("Celsius", "ºC"),
     FAHRENHEIT("Fahrenheit", "ºF")
-}
-
-enum class WindSpeedUnit(val description: String, val symbol: String) {
-    KILOMETERS_PER_HOUR("Kilometers per hour", "km/h"),
-    MILES_PER_HOUR("Miles per hour", "mph")
 }

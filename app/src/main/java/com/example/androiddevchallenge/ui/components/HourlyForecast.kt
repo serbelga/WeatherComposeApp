@@ -61,10 +61,12 @@ import com.example.androiddevchallenge.ui.theme.chartLinearGradientLight
 import com.example.androiddevchallenge.ui.theme.chartStrokeLight
 import com.example.androiddevchallenge.ui.theme.selector
 import com.example.androiddevchallenge.ui.theme.selectorShape
+import com.example.androiddevchallenge.util.DateUtil.formatMillis
 
 @Composable
 fun HourlyForecastCard(
     hourlyForecast: CityHourlyForecast,
+    isNight: Boolean,
     userPreferencesTemperatureUnit: TemperatureUnit
 ) {
     var selected by remember { mutableStateOf(0) }
@@ -79,6 +81,7 @@ fun HourlyForecastCard(
                         hourlyForecastChunk = item,
                         selected == index,
                         index,
+                        isNight,
                         userPreferencesTemperatureUnit
                     ) {
                         selected = it
@@ -153,6 +156,7 @@ fun HourlyForecastItem(
     hourlyForecastChunk: HourlyForecastChunk,
     selected: Boolean,
     index: Int,
+    isNight: Boolean,
     userPreferencesTemperatureUnit: TemperatureUnit,
     onClick: (Int) -> Unit
 ) {
@@ -168,8 +172,13 @@ fun HourlyForecastItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        val drawableResId =
+            if (isNight)
+                hourlyForecastChunk.weather.nightDrawableResId
+            else
+                hourlyForecastChunk.weather.drawableResId
         Image(
-            painterResource(id = hourlyForecastChunk.weather.drawableResId),
+            painterResource(id = drawableResId),
             contentDescription = "",
             modifier = Modifier.size(32.dp)
         )
@@ -179,7 +188,7 @@ fun HourlyForecastItem(
         )
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
-                hourlyForecastChunk.time,
+                formatMillis(hourlyForecastChunk.timestamp),
                 color = MaterialTheme.colors.onSurface,
                 style = MaterialTheme.typography.caption
             )
@@ -192,7 +201,7 @@ fun HourlyForecastItem(
 fun HourlyForecastCardPreview() {
     WeatherTheme {
         citiesHourlyForecast.firstOrNull()?.let {
-            HourlyForecastCard(it, TemperatureUnit.CELSIUS)
+            HourlyForecastCard(it, false, TemperatureUnit.CELSIUS)
         }
     }
 }
@@ -204,10 +213,13 @@ fun HourlyForecastItemPreview() {
         HourlyForecastItem(
             hourlyForecastChunk = HourlyForecastChunk(
                 Temperature(21f, TemperatureUnit.CELSIUS),
-                "14:00h",
+                50400000,
                 Weather.HEAVY_RAIN
             ),
-            false, 0, TemperatureUnit.CELSIUS
+            false,
+            0,
+            false,
+            TemperatureUnit.CELSIUS
         ) {}
     }
 }

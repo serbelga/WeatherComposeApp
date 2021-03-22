@@ -16,21 +16,27 @@
 package com.example.androiddevchallenge.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.androiddevchallenge.model.City
 import com.example.androiddevchallenge.model.CityDailyForecast
 import com.example.androiddevchallenge.model.CityHourlyForecast
 import com.example.androiddevchallenge.model.CityWeather
 import com.example.androiddevchallenge.model.TemperatureUnit
+import com.example.androiddevchallenge.model.WindSpeedUnit
+import com.example.androiddevchallenge.usecase.GetCitiesUseCase
 import com.example.androiddevchallenge.usecase.GetCityDailyForecastUseCase
 import com.example.androiddevchallenge.usecase.GetCityHourlyForecastUseCase
 import com.example.androiddevchallenge.usecase.GetCityWeatherUseCase
 import com.example.androiddevchallenge.usecase.GetTemperatureUnitUseCase
-import com.example.androiddevchallenge.usecase.IsDarkThemeEnabledUseCase
+import com.example.androiddevchallenge.usecase.GetWindSpeedUnitUseCase
+import com.example.androiddevchallenge.usecase.SetCitySelectedUseCase
 import com.example.androiddevchallenge.usecase.SetTemperatureUnitUseCase
+import com.example.androiddevchallenge.usecase.SetWindSpeedUnitUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,23 +45,48 @@ class WeatherViewModel @Inject constructor(
     getCityWeatherUseCase: GetCityWeatherUseCase,
     getCityHourlyForecastUseCase: GetCityHourlyForecastUseCase,
     getCityDailyForecastUseCase: GetCityDailyForecastUseCase,
-    isDarkThemeEnabledUseCase: IsDarkThemeEnabledUseCase,
     getTemperatureUnitUseCase: GetTemperatureUnitUseCase,
-    val setTemperatureUnitUseCase: SetTemperatureUnitUseCase
+    private val setTemperatureUnitUseCase: SetTemperatureUnitUseCase,
+    getWindSpeedUnitUseCase: GetWindSpeedUnitUseCase,
+    private val setWindSpeedUnitUseCase: SetWindSpeedUnitUseCase,
+    private val getCitiesUseCase: GetCitiesUseCase,
+    private val setCitySelectedUseCase: SetCitySelectedUseCase
 ) : ViewModel() {
 
-    val cityWeather: LiveData<CityWeather?> = getCityWeatherUseCase(2).asLiveData()
+    val cityWeather: LiveData<CityWeather?> = getCityWeatherUseCase().asLiveData()
 
-    val cityDailyForecast: LiveData<CityDailyForecast?> = getCityDailyForecastUseCase(1).asLiveData()
+    val cityDailyForecast: LiveData<CityDailyForecast?> = getCityDailyForecastUseCase().asLiveData()
 
     val cityHourlyForecast: LiveData<CityHourlyForecast?> =
-        getCityHourlyForecastUseCase.invoke(1).asLiveData()
+        getCityHourlyForecastUseCase().asLiveData()
 
-    val isDarkTheme: Flow<Boolean> = isDarkThemeEnabledUseCase()
+    val isNight: MutableLiveData<Boolean> = MutableLiveData()
 
-    val temperatureUnit = getTemperatureUnitUseCase()
+    val userPreferenceTemperatureUnit = getTemperatureUnitUseCase()
+
+    val userPreferenceWindSpeedUnit = getWindSpeedUnitUseCase()
+
+    val cities = getCitiesUseCase()
+
+    init {
+        viewModelScope.launch {
+            getCityWeatherUseCase().collect { cityWeather ->
+                isNight.value = cityWeather?.let {
+                    it.timestamp < it.sunriseTimestamp || it.timestamp > it.sunsetTimestamp
+                } ?: false
+            }
+        }
+    }
 
     fun setTemperatureUnit(temperatureUnit: TemperatureUnit) = viewModelScope.launch {
         setTemperatureUnitUseCase(temperatureUnit)
+    }
+
+    fun setWindSpeedUnit(windSpeedUnit: WindSpeedUnit) = viewModelScope.launch {
+        setWindSpeedUnitUseCase(windSpeedUnit)
+    }
+
+    fun setCitySelected(city: City) = viewModelScope.launch {
+        setCitySelectedUseCase(city.id)
     }
 }

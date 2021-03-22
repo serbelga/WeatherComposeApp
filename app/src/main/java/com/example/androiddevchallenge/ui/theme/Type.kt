@@ -30,7 +30,6 @@ val metropolisFontFamily = FontFamily(
     metropolisFontMedium, metropolisFontNormal
 )
 
-// Set of Material typography styles to start with
 val typography = Typography(
     body1 = TextStyle(
         fontFamily = metropolisFontFamily,
@@ -60,17 +59,10 @@ val typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         letterSpacing = 0.4.sp
-    )
-        /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
     ),
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
+    button = TextStyle(
+        fontFamily = metropolisFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontSize = 14.sp
     )
-    */
 )

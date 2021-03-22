@@ -13,22 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.androiddevchallenge.model
+package com.example.androiddevchallenge.usecase
 
-import com.example.androiddevchallenge.util.DateUtil.formatMillis
+import com.example.androiddevchallenge.model.WindSpeedUnit
+import com.example.androiddevchallenge.preferences.UserPreferencesRepository
 
-data class CityWeather(
-    val city: City,
-    val timestamp: Long,
-    val day: String,
-    val temperature: Temperature,
-    val humidity: Int? = null,
-    val windSpeed: WindSpeed,
-    val weather: Weather,
-    val sunriseTimestamp: Long,
-    val sunsetTimestamp: Long
+class SetWindSpeedUnitUseCase(
+    private val userPreferencesRepository: UserPreferencesRepository
 ) {
-    fun getHumidity(): String = "$humidity%"
 
-    fun formatDayAndTimestamp(): String = "$day ${formatMillis(timestamp)}"
+    suspend operator fun invoke(windSpeedUnit: WindSpeedUnit) =
+        userPreferencesRepository.setWindSpeedUnit(windSpeedUnit)
 }

@@ -22,22 +22,6 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-private val DarkColorPalette = darkColors(
-    primary = indigoA200,
-    secondary = indigo200,
-    background = backgroundDark,
-    surface = backgroundDark
-)
-
-private val LightColorPalette = lightColors(
-    primary = indigoA400,
-    secondary = indigoA700,
-    onSurface = Color.Black,
-    onBackground = Color(0xFF292929),
-    surface = Color(0xFFFFFFFF),
-    background = Color(0xFFFBFBFB)
-)
-
 val Colors.outline: Color
     @Composable get() = if (isLight) outlineLight else outlineDark
 
@@ -53,9 +37,21 @@ val Colors.chartFill: Color
 @Composable
 fun WeatherTheme(darkTheme: Boolean = false, content: @Composable() () -> Unit) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+        darkColors(
+            primary = indigoA200,
+            secondary = indigo200,
+            background = backgroundDark,
+            surface = backgroundDark
+        )
     } else {
-        LightColorPalette
+        lightColors(
+            primary = indigoA400,
+            secondary = indigoA700,
+            onSurface = Color.Black,
+            onBackground = Color(0xFF292929),
+            surface = Color(0xFFFFFFFF),
+            background = Color(0xFFFBFBFB)
+        )
     }
 
     MaterialTheme(
