@@ -22,9 +22,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -74,7 +74,7 @@ fun SettingsScreen(
         },
         modifier = Modifier.statusBarsPadding()
     ) {
-        Column {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             CitySelectedSettings(cities, cityWeather.value?.city?.id) {
                 weatherViewModel.setCitySelected(it)
             }
@@ -98,11 +98,9 @@ fun CitySelectedSettings(
 ) {
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
         SettingsPreferenceTitle(stringResource(R.string.city))
-        LazyColumn {
-            items(cities) {
-                CityItem(city = it, selected) { city ->
-                    onCitySelected(city)
-                }
+        cities.forEach {
+            CityItem(city = it, selected) { city ->
+                onCitySelected(city)
             }
         }
         TextButton(
@@ -153,32 +151,30 @@ fun TemperatureUnitSettings(
     val temperatureUnits = enumValues<TemperatureUnit>()
     Column {
         SettingsPreferenceTitle(stringResource(R.string.temperature_unit))
-        LazyColumn {
-            items(temperatureUnits) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .selectable(
-                            selected = (it == userPreferenceTemperatureUnit),
-                            onClick = {
-                                onTemperatureUnitSelected(it)
-                            },
-                            role = Role.RadioButton
-                        )
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
+        temperatureUnits.forEach {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .selectable(
                         selected = (it == userPreferenceTemperatureUnit),
-                        onClick = null
+                        onClick = {
+                            onTemperatureUnitSelected(it)
+                        },
+                        role = Role.RadioButton
                     )
-                    Text(
-                        text = "${it.description} (${it.symbol})",
-                        style = MaterialTheme.typography.body1.merge(),
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                }
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = (it == userPreferenceTemperatureUnit),
+                    onClick = null
+                )
+                Text(
+                    text = "${it.description} (${it.symbol})",
+                    style = MaterialTheme.typography.body1.merge(),
+                    modifier = Modifier.padding(start = 16.dp)
+                )
             }
         }
     }
@@ -192,29 +188,27 @@ fun WindSpeedUnitSettings(
     val windSpeedUnits = enumValues<WindSpeedUnit>()
     Column {
         SettingsPreferenceTitle(stringResource(R.string.wind_speed))
-        LazyColumn {
-            items(windSpeedUnits) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .selectable(
-                            selected = (it == userPreferenceWindSpeedUnit),
-                            onClick = { onWindSpeedUnit(it) }
-                        )
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
+        windSpeedUnits.forEach {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .selectable(
                         selected = (it == userPreferenceWindSpeedUnit),
-                        onClick = null
+                        onClick = { onWindSpeedUnit(it) }
                     )
-                    Text(
-                        text = "${it.description} (${it.symbol})",
-                        style = MaterialTheme.typography.body1.merge(),
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                }
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = (it == userPreferenceWindSpeedUnit),
+                    onClick = null
+                )
+                Text(
+                    text = "${it.description} (${it.symbol})",
+                    style = MaterialTheme.typography.body1.merge(),
+                    modifier = Modifier.padding(start = 16.dp)
+                )
             }
         }
     }

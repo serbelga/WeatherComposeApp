@@ -109,6 +109,7 @@ fun HourlyForecastChart(
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(top = 8.dp)
             .height(120.dp)
     ) {
         val canvasWidth = size.width
