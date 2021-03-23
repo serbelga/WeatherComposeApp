@@ -60,7 +60,9 @@ class WeatherViewModel @Inject constructor(
     val cityHourlyForecast: LiveData<CityHourlyForecast?> =
         getCityHourlyForecastUseCase().asLiveData()
 
-    val isNight: MutableLiveData<Boolean> = MutableLiveData()
+    private val _isNight: MutableLiveData<Boolean> = MutableLiveData()
+
+    val isNight: LiveData<Boolean> = _isNight
 
     val userPreferenceTemperatureUnit = getTemperatureUnitUseCase()
 
@@ -71,7 +73,7 @@ class WeatherViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getCityWeatherUseCase().collect { cityWeather ->
-                isNight.value = cityWeather?.let {
+                _isNight.value = cityWeather?.let {
                     it.timestamp < it.sunriseTimestamp || it.timestamp > it.sunsetTimestamp
                 } ?: false
             }
